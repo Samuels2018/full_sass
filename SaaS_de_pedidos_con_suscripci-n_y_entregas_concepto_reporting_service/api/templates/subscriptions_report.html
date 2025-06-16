@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Subscriptions Report{% endblock %}
+
+{% block content %}
+  <h1>Active Subscriptions Report</h1>
+  
+  <table>
+    <thead>
+      <tr>
+        <th>Plan Type</th>
+        <th>Subscriptions</th>
+        <th>Revenue</th>
+        <th>Unique Users</th>
+        <th>ARPU</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in data %}
+      <tr>
+        <td>{{ item.plan_type }}</td>
+        <td>{{ item.total_subscriptions }}</td>
+        <td>${{ "%.2f"|format(item.total_revenue) }}</td>
+        <td>{{ item.unique_users_count }}</td>
+        <td>${{ "%.2f"|format(item.arpu) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

@@ -1,0 +1,31 @@
+{
+  "name": "suscripcion-service",
+  "version": "0.0.1",
+  "description": "saas de pedidos con suscripción y entregas concepto: suscripcion service",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --recursive test/**/*.test.js",
+    "test_inique": "mocha",
+    "start": "nodemon index.js"
+  },
+  "author": "mel",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "nodemon": "^3.1.9",
+    "pg": "^8.15.1",
+    "require-all": "^3.0.0",
+    "sequelize": "^6.37.7",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "chai": "^5.2.0",
+    "mocha": "^11.1.0",
+    "mock-req-res": "^1.2.1",
+    "sinon": "^20.0.0"
+  }
+}

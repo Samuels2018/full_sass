@@ -1,0 +1,136 @@
+version: "3.9"
+services:
+  dbPostgres:
+    image: postgres:latest
+    container_name: dbPostgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  dbMongo:
+    image: mongo:latest
+    container_name: dbMongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  SaaS_de_pedidos_con_suscripci-n_y_entregas_concepto_delivery_service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: saas_de_pedidos_con_suscripci-n_y_entregas_concepto_delivery_service
+    volumes:
+      - ./saas_de_pedidos_con_suscripci-n_y_entregas_concepto_delivery_service:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      dbPostgres:
+        condition: service_healthy
+    networks:
+      - default
+
+  SaaS_de_pedidos_con_suscripci-n_y_entregas_concepto_reporting_service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: saas_de_pedidos_con_suscripci-n_y_entregas_concepto_reporting_service
+    volumes:
+      - ./saas_de_pedidos_con_suscripci-n_y_entregas_concepto_reporting_service:/app
+    ports:
+      - "8001:8000"
+    depends_on:
+      dbMongo:
+        condition: service_healthy
+    networks:
+      - default
+
+  SaaS_de_pedidos_con_suscripción_y_entregas_concepto_auth:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: saas_de_pedidos_con_suscripción_y_entregas_concepto_auth
+    volumes:
+      - ./saas_de_pedidos_con_suscripción_y_entregas_concepto_auth:/app
+    ports:
+      - "8002:8000"
+    depends_on:
+      dbPostgres:
+        condition: service_healthy
+    networks:
+      - default
+
+  SaaS_de_pedidos_con_suscripción_y_entregas_concepto_suscripcion_service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: saas_de_pedidos_con_suscripción_y_entregas_concepto_suscripcion_service
+    volumes:
+      - ./saas_de_pedidos_con_suscripción_y_entregas_concepto_suscripcion_service:/app
+    ports:
+      - "8003:8000"
+    depends_on:
+      dbPostgres:
+        condition: service_healthy
+    networks:
+      - default
+
+  sass-billing-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sass-billing-service
+    volumes:
+      - ./sass-billing-service:/app
+    ports:
+      - "8004:8000"
+    depends_on:
+      dbPostgres:
+        condition: service_healthy
+    networks:
+      - default
+
+  sass-orders-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sass-orders-service
+    volumes:
+      - ./sass-orders-service:/app
+    ports:
+      - "8005:8000"
+    depends_on:
+      dbMongo:
+        condition: service_healthy
+    networks:
+      - default
+
+  sass_frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sass_frontend
+    volumes:
+      - ./sass_frontend:/app
+    ports:
+      - "8006:8000"
+    depends_on:
+      dbPostgres:
+        condition: service_healthy
+    networks:
+      - default
